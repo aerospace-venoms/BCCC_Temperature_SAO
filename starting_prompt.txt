@@ -1,0 +1,42 @@
+Today we are going to work on a firmware project for a PCB I've designed and had manufactured. It is currently complete and on my desk, ready to be flashed (I hope)! It consists of a RP2350 microcontroller, USB, another power connector, and some additional IO. I have a USB C port on the board, so we should be able to use the "write to USB drive" method for programming it.
+
+I/O:
+3-Pin debug header (SWCLK, SWD, GND) we can optionally use for debugging
+2 user pushbuttons on RUN and QSPI_SS pins (buttons assert LOW signal on those lines when pushed)
+
+QSPI bus (pins 55-60, the default SPI0 bus pins I think)  wired to W25Q128 flash memory (will contain boot and other persistent memory)
+1x DS18B20, on GPIO 16, will be used to measure temperature
+
+3x 7-segment LED displays next to one another (well, really 8-segment because they have a decimal also). These are a bit complex, there are a few steps involved. Each digit's LEDs are wired in common-anode configuration, and each digit's anode is connected to ground through a MDD2302 N-MOS, so it's active-high control. The RP2350 pins on each of these digit_select pins are GPIO 8, 9, and 10 for digits 1, 2, and 3 respectively. That's how we'll select which digit is being displayed during time-multiplexing later.
+
+Next, the individual cathodes for each digit are controlled by a 74HC595 shift register, which has the following pin assignments from the rp2350:
+Serial data in: GPIO11
+Shift register clock: GPIO12
+Storage register clock: GPIO13
+Shift output enable: GPIO14 (active low, no board pull-up, so do this in firmware)
+Master reset: GPIO15 (active low, no board pull-up, so do this in firmware)
+
+The output lines of that shift register each control one segment of all the digits at once. Lines A through H control segments a, b, c, d, e, f, g, and decimal point respectively.
+
+By way of example, if we wanted to display a "7" character with the decimal point on for segment two of the display, we would first lookup that a "7" consists of three lit segments, segments A, B, and C, plus the decimal point for a fourth segment. We would therefore configure the shift register to output HIGH on exactly lines A, B, C, and H (for the decimal point). We would also select digit 2 by asserting HIGH on the appropriate digit_select line, and assert LOW on the other digit select lines. Make sense?
+
+We will time-multiplex the digits in this way, so we can display any 3-digit number we like (with a decimal point, too!) Ideally, we can do this fast enough that even a cell phone digital camera will "see" multiple time-multiplexed cycles, and be able to properly capture what we are trying to display.
+
+
+
+The end goal is to read the temperature from the DS18B20 and display the 3-significant-digit result, in degrees F, on the 7-segment displays. We will need to get there in deliberate steps, testing each part of the board along the way. I'm thinking we can use the PIO features of this microcontroller as well as the second core to great effect for this project. It's a bit overkill for a brand-new RP2350, but hey, there's no kill like overkill.
+
+Ok, what are your questions before we get started?
+
+
+(answers to early questions)
+
+We will use the Pico SDK. I'm not sure I have it installed, you can check and 
+ install it if missing. This is the RP2350 A variant, in QFN-60 form-factor.    
+Your understanding of the 74HC595 is correct. The only device on that 1-wire    
+bus is the DS18B20, but it might not be present. If not, use the RP2350's       
+internal temperature sensor. The W25Q128 is boot flash. I like your suggested   
+process for deliberate steps along the way, let's do that. Ok, let's get        
+started.
+
+  
