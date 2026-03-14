@@ -24,6 +24,25 @@
 #define CONV_TIME_MS         750
 
 // ---------------------------------------------------------------------------
+// CRC-8/Maxim (polynomial 0x31, reflected input/output, init 0x00)
+// Computing crc8(buf, n) where buf[n-1] is the CRC byte should return 0.
+// ---------------------------------------------------------------------------
+static uint8_t crc8(const uint8_t *data, int len) {
+    uint8_t crc = 0;
+    for (int i = 0; i < len; i++) {
+        uint8_t byte = data[i];
+        for (int b = 0; b < 8; b++) {
+            if ((crc ^ byte) & 0x01)
+                crc = (crc >> 1) ^ 0x8C;
+            else
+                crc >>= 1;
+            byte >>= 1;
+        }
+    }
+    return crc;
+}
+
+// ---------------------------------------------------------------------------
 // Bus primitives
 // ---------------------------------------------------------------------------
 
@@ -117,9 +136,16 @@ bool ds18b20_read_temp_c(float *temp_c) {
     for (int i = 0; i < 9; i++)
         sp[i] = ow_read_byte();
 
+    // Validate CRC: crc8 over all 9 bytes (including the CRC byte) must be 0
+    if (crc8(sp, 9) != 0) return false;
+
     // sp[0] = temp LSB, sp[1] = temp MSB (two's-complement, 1/16 °C per LSB)
-    // sp[8] = CRC8 — not verified here; add if bus reliability is a concern
     int16_t raw = (int16_t)((sp[1] << 8) | sp[0]);
-    *temp_c = raw / 16.0f;
+    float t = raw / 16.0f;
+
+    // DS18B20 valid range is -55 °C to +125 °C; reject readings outside this
+    if (t < -55.0f || t > 125.0f) return false;
+
+    *temp_c = t;
     return true;
 }
