@@ -1,6 +1,7 @@
 #include "display.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include <math.h>
 
 // Segment patterns for '0'–'9' (no decimal point, active-high segments)
 //   bit 0=a, 1=b, 2=c, 3=d, 4=e, 5=f, 6=g
@@ -116,4 +117,35 @@ void display_refresh(int digit) {
 
     // Enable this digit
     gpio_put(DIG_PINS[digit], 1);
+}
+
+void display_set_temp_f(float temp_f) {
+    if (isnan(temp_f) || temp_f < -99.9f || temp_f > 999.9f) {
+        s_buf[0] = SEG_DASH;
+        s_buf[1] = SEG_DASH;
+        s_buf[2] = SEG_DASH;
+        return;
+    }
+
+    if (temp_f >= 100.0f) {
+        // Integer display: "NNN"
+        int t = (int)(temp_f + 0.5f);
+        if (t > 999) t = 999;
+        s_buf[0] = SEG_DIGITS[t / 100];
+        s_buf[1] = SEG_DIGITS[(t / 10) % 10];
+        s_buf[2] = SEG_DIGITS[t % 10];
+    } else if (temp_f >= 0.0f) {
+        // One decimal place: "XX.X"
+        int t = (int)(temp_f * 10.0f + 0.5f);   // e.g. 72.5 → 725
+        s_buf[0] = SEG_DIGITS[t / 100];
+        s_buf[1] = SEG_DIGITS[(t / 10) % 10] | SEG_DP;
+        s_buf[2] = SEG_DIGITS[t % 10];
+    } else {
+        // Negative: "-XX" (no decimal; below 0 °F is unusual but handle it)
+        int t = (int)(-temp_f + 0.5f);
+        if (t > 99) t = 99;
+        s_buf[0] = SEG_DASH;
+        s_buf[1] = SEG_DIGITS[t / 10];
+        s_buf[2] = SEG_DIGITS[t % 10];
+    }
 }

@@ -61,6 +61,13 @@ void display_set_raw(uint8_t d0, uint8_t d1, uint8_t d2);
 // Show an integer 0–999. Values outside range show "---".
 void display_set_number(int value);
 
+// Show a temperature in degrees Fahrenheit.
+//   < 0 °F        →  "-XX"  (no decimal)
+//   0–99.9 °F     →  "XX.X" (one decimal place, DP on middle digit)
+//   100–999 °F    →  "NNN"  (integer, no decimal)
+//   out of range  →  "---"
+void display_set_temp_f(float temp_f);
+
 // Show one digit on one digit position (0–2), all others blank.
 // Useful for testing individual positions.
 void display_set_digit(int pos, uint8_t segments);

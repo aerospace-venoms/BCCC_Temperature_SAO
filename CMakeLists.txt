@@ -14,6 +14,8 @@ pico_sdk_init()
 add_executable(thermometer
     src/main.c
     src/display.c
+    src/ds18b20.c
+    src/temp.c
 )
 
 # Our board has W25Q128 = 16MB flash
@@ -26,6 +28,8 @@ target_include_directories(thermometer PRIVATE src)
 target_link_libraries(thermometer
     pico_stdlib
     hardware_gpio
+    hardware_adc
+    pico_multicore
 )
 
 # USB serial for debug output; no UART
