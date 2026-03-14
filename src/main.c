@@ -40,6 +40,14 @@ int main(void) {
 
     multicore_launch_core1(core1_display_loop);
 
+    // Boot splash: "DEF" → "C0n" → "LoL"
+    display_set_raw(SEG_CHR_D, SEG_CHR_E, SEG_CHR_F);
+    sleep_ms(1000);
+    display_set_raw(SEG_CHR_C, SEG_DIGITS[0], SEG_CHR_n);
+    sleep_ms(1000);
+    display_set_raw(SEG_CHR_L, SEG_CHR_o, SEG_CHR_L);
+    sleep_ms(1000);
+
     temp_init();
 
     if (temp_has_ds18b20()) {
@@ -62,6 +70,7 @@ int main(void) {
             printf("Internal: %.1f F  (die temp, not ambient)\n",
                    temp_read_internal_f());
         }
-        sleep_ms(1000);
+        // Refresh the sensor reading 10 times/second
+        sleep_ms(100);
     }
 }

@@ -29,12 +29,16 @@ static const uint8_t DIG_PINS[NUM_DIGITS] = {PIN_DIG1, PIN_DIG2, PIN_DIG3};
 
 static inline void sr_clock_pulse(void) {
     gpio_put(PIN_SR_SRCLK, 1);
+    sleep_us(1);
     gpio_put(PIN_SR_SRCLK, 0);
+    sleep_us(1);
 }
 
 static inline void sr_latch(void) {
     gpio_put(PIN_SR_RCLK, 1);
+    sleep_us(1);
     gpio_put(PIN_SR_RCLK, 0);
+    sleep_us(1);
 }
 
 // ---------------------------------------------------------------------------

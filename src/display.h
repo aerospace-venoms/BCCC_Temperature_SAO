@@ -43,6 +43,15 @@ extern const uint8_t SEG_DIGITS[10];
 #define SEG_ALL_ON  0x7F    // all segments, no DP
 #define SEG_BLANK   0x00    // all off
 
+// Letter glyphs
+#define SEG_CHR_C   0x39    // C: a d e f
+#define SEG_CHR_D   0x5E    // D: b c d e g  (lowercase d shape — no true uppercase D)
+#define SEG_CHR_E   0x79    // E: a d e f g
+#define SEG_CHR_F   0x71    // F: a e f g
+#define SEG_CHR_L   0x38    // L: d e f
+#define SEG_CHR_n   0x54    // n: c e g  (no true uppercase N)
+#define SEG_CHR_o   0x3F    // o: a b c d e f  (same as '0')
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
