@@ -13,4 +13,9 @@ bool temp_has_ds18b20(void);
 float temp_read_c(void);
 
 // Read the current temperature in degrees Fahrenheit.
+// Uses DS18B20 if available, otherwise the internal ADC sensor.
 float temp_read_f(void);
+
+// Read the RP2350 internal ADC temperature sensor directly (die temperature,
+// not ambient).  Always available regardless of DS18B20 presence.
+float temp_read_internal_f(void);

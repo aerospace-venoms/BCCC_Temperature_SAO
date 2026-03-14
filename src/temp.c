@@ -57,3 +57,7 @@ float temp_read_c(void) {
 float temp_read_f(void) {
     return temp_read_c() * 9.0f / 5.0f + 32.0f;
 }
+
+float temp_read_internal_f(void) {
+    return read_internal_c() * 9.0f / 5.0f + 32.0f;
+}

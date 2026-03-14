@@ -5,15 +5,18 @@
 // ---------------------------------------------------------------------------
 // 1-Wire timing (all values in microseconds)
 // DS18B20 datasheet: Fig. 14 / 15 (reset/presence), Fig. 16 (read/write slots)
+//
+// sleep_us() on RP2350 has ~1-2 µs of call overhead, so all targets are set
+// conservatively to stay within spec after that overhead is added.
 // ---------------------------------------------------------------------------
-#define OW_RESET_US         480   // reset pulse width (min 480)
-#define OW_PRESENCE_WAIT_US  70   // master release → sample presence
-#define OW_PRESENCE_TAIL_US 410   // remainder of reset recovery (480-70)
-#define OW_SLOT_US           65   // total read/write slot (min 60)
-#define OW_WRITE1_LOW_US      6   // low time for write-1 slot (1–15 µs)
-#define OW_WRITE0_LOW_US     60   // low time for write-0 slot (60–120 µs)
-#define OW_READ_LOW_US        3   // initiate read slot
-#define OW_READ_SAMPLE_US     9   // sample at 9 µs after slot start (must be <15)
+#define OW_RESET_US         500   // reset pulse width (spec min 480 µs)
+#define OW_PRESENCE_WAIT_US  80   // master release → sample presence
+#define OW_PRESENCE_TAIL_US 420   // remainder of reset recovery (500-80)
+#define OW_SLOT_US           70   // total read/write slot (spec min 60 µs)
+#define OW_WRITE1_LOW_US      8   // low time for write-1 slot (spec 1–15 µs)
+#define OW_WRITE0_LOW_US     65   // low time for write-0 slot (spec 60–120 µs)
+#define OW_READ_LOW_US        5   // initiate read slot (spec 1–15 µs)
+#define OW_READ_SAMPLE_US    13   // sample at 13 µs after slot start (must be <15)
 
 // DS18B20 commands
 #define CMD_SKIP_ROM         0xCC

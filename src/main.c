@@ -1,11 +1,11 @@
 // Step 2: Temperature sensing with DS18B20 (or RP2350 internal fallback)
 //
 // Core 0: reads temperature every ~1 s and updates the display buffer.
-// Core 1: time-multiplexes the 3-digit display continuously at ~333 Hz,
-//         so the display stays lit even while core 0 blocks during the
-//         750 ms DS18B20 conversion.
+// Core 1: time-multiplexes the 3-digit display continuously at ~333 Hz.
 //
-// USB serial reports which sensor is active and prints each reading.
+// Display behaviour:
+//   DS18B20 present  → temperature in °F on the 7-segment display
+//   DS18B20 absent   → "---" on the display; internal die temp logged to serial
 
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
@@ -17,9 +17,7 @@
 #define DIGIT_ON_US 1000    // 1 ms per digit → ~333 Hz full refresh
 
 // ---------------------------------------------------------------------------
-// Core 1: display multiplexer (runs forever, no inter-core sync needed —
-// the display buffer is updated atomically one byte at a time by core 0,
-// and a single torn frame is imperceptible at 333 Hz)
+// Core 1: display multiplexer
 // ---------------------------------------------------------------------------
 static void core1_display_loop(void) {
     int digit = 0;
@@ -35,10 +33,10 @@ static void core1_display_loop(void) {
 // ---------------------------------------------------------------------------
 int main(void) {
     stdio_init_all();
-    sleep_ms(1000);     // give USB CDC time to enumerate before first printf
+    sleep_ms(1000);     // give USB CDC time to enumerate
 
     display_init();
-    display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);  // show "---" until first reading
+    display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);
 
     multicore_launch_core1(core1_display_loop);
 
@@ -47,14 +45,23 @@ int main(void) {
     if (temp_has_ds18b20()) {
         printf("Sensor: DS18B20 on GPIO %d\n", PIN_OW);
     } else {
-        printf("Sensor: DS18B20 not found — using RP2350 internal ADC\n");
-        printf("        (connect DS18B20 to GPIO %d and reset to activate it)\n", PIN_OW);
+        printf("Sensor: DS18B20 not found on GPIO %d\n", PIN_OW);
+        printf("        Displaying --- ; internal die temp logged here.\n");
     }
 
     while (true) {
-        float f = temp_read_f();
-        printf("%.1f F\n", f);
-        display_set_temp_f(f);
+        if (temp_has_ds18b20()) {
+            float f = temp_read_f();
+            display_set_temp_f(f);
+            printf("DS18B20:  %.1f F\n", f);
+        } else {
+            // No external sensor — keep "---" on the display.
+            // The internal sensor is not an ambient thermometer, so we
+            // log it to serial for information only.
+            display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);
+            printf("Internal: %.1f F  (die temp, not ambient)\n",
+                   temp_read_internal_f());
+        }
         sleep_ms(1000);
     }
 }
