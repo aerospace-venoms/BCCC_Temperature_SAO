@@ -6,6 +6,8 @@
 *.kicad_prl
 *-save.kicad_pcb
 *-save.kicad_sch
+*-backups/
+*-cache.lib
 
 # Local settings and workspace data (specific to your machine/setup)
 fp-info-cache
