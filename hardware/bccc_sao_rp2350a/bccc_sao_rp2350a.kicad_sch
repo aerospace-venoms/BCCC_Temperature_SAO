@@ -8447,6 +8447,18 @@
 		)
 		(uuid "7079d14d-ebaf-4eb3-b264-7a4faf0b923e")
 	)
+	(text "Brightness Select"
+		(exclude_from_sim no)
+		(at 271.78 148.844 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+		)
+		(uuid "7be5a3c4-4d3d-48f3-9284-16d818de1a8b")
+	)
 	(text "D e c o u p l e"
 		(exclude_from_sim no)
 		(at 263.398 64.77 0)
@@ -8841,8 +8853,8 @@
 		(uuid "66563c6e-dd72-47b5-a8dc-47f9fea270a3")
 	)
 	(no_connect
-		(at 229.87 160.02)
-		(uuid "84919958-4bc8-4801-aabe-4822ddddae4f")
+		(at 229.87 154.94)
+		(uuid "92a8cb2d-732f-44e2-bbc1-3192d447b1e8")
 	)
 	(no_connect
 		(at 45.72 60.96)
@@ -8879,10 +8891,6 @@
 	(no_connect
 		(at 229.87 187.96)
 		(uuid "fc5be1d5-2290-4a78-8f14-c5574911be9b")
-	)
-	(no_connect
-		(at 229.87 154.94)
-		(uuid "ffad6fa4-900d-44a2-b7be-73c0f65b0912")
 	)
 	(wire
 		(pts
@@ -9916,6 +9924,16 @@
 	)
 	(wire
 		(pts
+			(xy 264.16 163.83) (xy 267.97 163.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b08eace9-9626-4f5f-badf-6b7b8391c5f1")
+	)
+	(wire
+		(pts
 			(xy 177.8 81.28) (xy 180.34 81.28)
 		)
 		(stroke
@@ -10414,6 +10432,17 @@
 		)
 		(uuid "0ca3d7ab-1b61-44e7-a865-185c62952df3")
 	)
+	(label "GPIO19"
+		(at 264.16 163.83 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+			)
+			(justify right bottom)
+		)
+		(uuid "10f23dd2-81dc-4fe5-bb3e-b718653d3e63")
+	)
 	(label "GPIO13"
 		(at 364.49 148.59 0)
 		(effects
@@ -10423,6 +10452,17 @@
 			(justify left bottom)
 		)
 		(uuid "144a7f7a-0ac3-4135-a281-539be48df08b")
+	)
+	(label "GPIO19"
+		(at 229.87 160.02 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+			)
+			(justify left bottom)
+		)
+		(uuid "14a39beb-6b44-46ac-80e5-330cdd09f19b")
 	)
 	(label "XOUT"
 		(at 166.37 152.4 180)
@@ -11505,7 +11545,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "04c716f0-6d31-4011-975a-b3d71d3f2b20")
-		(property "Reference" "#PWR0146"
+		(property "Reference" "#PWR0147"
 			(at 289.56 78.74 0)
 			(effects
 				(font
@@ -11555,7 +11595,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0146")
+					(reference "#PWR0147")
 					(unit 1)
 				)
 			)
@@ -12032,7 +12072,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "17734e75-54f0-4e87-9219-2b8a59222c0d")
-		(property "Reference" "#PWR0148"
+		(property "Reference" "#PWR0149"
 			(at 312.42 39.37 0)
 			(effects
 				(font
@@ -12083,7 +12123,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0148")
+					(reference "#PWR0149")
 					(unit 1)
 				)
 			)
@@ -15301,6 +15341,311 @@
 		)
 	)
 	(symbol
+		(lib_id "PCM_JLCPCB-Connectors_Buttons:Tactile Button, 160gf, 12V, 50mA, 4.0mm")
+		(at 270.51 158.75 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5d2c1ff3-6b68-464a-9786-2fa012356975")
+		(property "Reference" "S103"
+			(at 263.906 152.146 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "Tactile Button, 160gf"
+			(at 263.906 154.6861 90)
+			(effects
+				(font
+					(size 0.8 0.8)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "PCM_JLCPCB:SW_TS-1088-AR02016"
+			(at 280.67 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_XUNPU-TS-1088-AR02016_C720477.pdf"
+			(at 270.383 161.036 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Without 50mA 4mm 100MΩ 100000 Times 12V 160gf 3mm 2mm Round Button Standing paste SPST SMD Tactile Switches ROHS"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C720477"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Stock" "346801"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" "0.044USD"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Process" "SMT"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Minimum Qty" "5"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Attrition Qty" "4"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Class" "Basic Component"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Category" "Switches,Tactile Switches"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "XUNPU"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "TS-1088-AR02016"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Switch Length" "4mm"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Voltage Rating (Dc)" "12V"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "With Lamp" "No"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Operating Force" "160gf@±50gf"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Actuator/Cap Color" "Black"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mechanical Life" "100000 Times"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Strike Gundam" "NO"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Circuit" "SPST"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Switch Height" "2mm"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Actuator Style" "Round Button"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Switch Width" "3mm"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Contact Current" "50mA"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Operating Temperature" "-30°C~+80°C"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mounting Style" "Brick nogging"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Insulation Resistance" "100MΩ"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Pin Style" "SMDSplicing"
+			(at 270.51 158.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aeb0a7ef-99b8-4651-aa54-39e499786a34")
+		)
+		(pin "2"
+			(uuid "d44d311c-dca5-4c76-9686-0e590737afbb")
+		)
+		(instances
+			(project "bccc_sao_rp2350a"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "S103")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "+3V3_1")
 		(lib_id "power:+3V3")
 		(at 280.67 74.93 0)
@@ -15311,7 +15656,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5f58a830-cd69-48ba-ab3d-a6dad07851e2")
-		(property "Reference" "#PWR0144"
+		(property "Reference" "#PWR0145"
 			(at 280.67 78.74 0)
 			(effects
 				(font
@@ -15361,7 +15706,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0144")
+					(reference "#PWR0145")
 					(unit 1)
 				)
 			)
@@ -16283,7 +16628,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6b7fbcd3-cf4f-42ed-966a-39852d574e0a")
-		(property "Reference" "#PWR0147"
+		(property "Reference" "#PWR0148"
 			(at 289.56 88.9 0)
 			(effects
 				(font
@@ -16333,7 +16678,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0147")
+					(reference "#PWR0148")
 					(unit 1)
 				)
 			)
@@ -17613,9 +17958,9 @@
 		(at 54.61 170.18 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "884ae3bc-99eb-4fdb-b3f2-64a63d4d0125")
 		(property "Reference" "J102"
@@ -20028,7 +20373,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "af2bd432-6969-4aa3-ae02-dfc5cfcabe47")
-		(property "Reference" "#PWR0151"
+		(property "Reference" "#PWR0152"
 			(at 387.35 43.18 0)
 			(effects
 				(font
@@ -20078,7 +20423,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0151")
+					(reference "#PWR0152")
 					(unit 1)
 				)
 			)
@@ -20162,7 +20507,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b6860bb6-eccb-4d22-b712-9abeab1214cb")
-		(property "Reference" "#PWR0145"
+		(property "Reference" "#PWR0146"
 			(at 280.67 88.9 0)
 			(effects
 				(font
@@ -20212,7 +20557,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0145")
+					(reference "#PWR0146")
 					(unit 1)
 				)
 			)
@@ -21976,7 +22321,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d9f99047-2d71-4506-a3da-d777df0db8dc")
-		(property "Reference" "#PWR0150"
+		(property "Reference" "#PWR0151"
 			(at 342.9 113.03 0)
 			(effects
 				(font
@@ -22026,7 +22371,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0150")
+					(reference "#PWR0151")
 					(unit 1)
 				)
 			)
@@ -22572,6 +22917,73 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
+		(at 275.59 163.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e687b8fe-68c1-4eaa-9140-8647c940d0a9")
+		(property "Reference" "#PWR0144"
+			(at 275.59 170.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 275.59 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 275.59 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 275.59 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 275.59 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5468344a-5bd2-4bdf-b7e9-0c7d72f235ea")
+		)
+		(instances
+			(project "bccc_sao_rp2350a"
+				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
+					(reference "#PWR0144")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_name "GND_1")
+		(lib_id "power:GND")
 		(at 198.12 198.12 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -23001,7 +23413,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f78e38e5-6bf0-4824-b796-4ee77bf71125")
-		(property "Reference" "#PWR0149"
+		(property "Reference" "#PWR0150"
 			(at 342.9 95.25 0)
 			(effects
 				(font
@@ -23051,7 +23463,7 @@
 		(instances
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "#PWR0149")
+					(reference "#PWR0150")
 					(unit 1)
 				)
 			)
