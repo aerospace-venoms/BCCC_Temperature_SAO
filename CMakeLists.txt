@@ -21,6 +21,8 @@ add_executable(thermometer
 # Our board has W25Q128 = 16MB flash
 target_compile_definitions(thermometer PRIVATE
     PICO_FLASH_SIZE_BYTES=16777216
+    # Uncomment to hold one segment steady for LED Vf measurement:
+    MEASURE_LED_VF
 )
 
 target_include_directories(thermometer PRIVATE src)

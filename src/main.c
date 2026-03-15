@@ -38,6 +38,14 @@ int main(void) {
     display_init();
     display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);
 
+#ifdef MEASURE_LED_VF
+    // Hold segment 'a' of digit 1 on continuously for Vf measurement.
+    // Remove this block when done.
+    display_sr_write(0x01);             // segment a only
+    gpio_put(PIN_DIG1, 1);             // digit 1 on
+    while (true) tight_loop_contents();
+#endif
+
     multicore_launch_core1(core1_display_loop);
 
     // Boot splash: "DEF" → "C0n" → "LoL"
