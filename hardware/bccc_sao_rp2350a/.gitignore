@@ -9,6 +9,7 @@
 *-backups/
 *-cache.lib
 *autosave*
+*.lck
 
 # Local settings and workspace data (specific to your machine/setup)
 fp-info-cache
