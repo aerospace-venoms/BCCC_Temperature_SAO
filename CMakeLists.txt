@@ -18,11 +18,12 @@ add_executable(thermometer
     src/temp.c
 )
 
-# Our board has W25Q128 = 16MB flash
+# Hardware revision: 10 = v1.0, 13 = v1.3 (brightness button on GPIO 19)
+set(HW_REV 13)
+
 target_compile_definitions(thermometer PRIVATE
-    PICO_FLASH_SIZE_BYTES=16777216
-    # Uncomment to hold one segment steady for LED Vf measurement:
-    MEASURE_LED_VF
+    PICO_FLASH_SIZE_BYTES=2097152   # 2MB — fits both W25Q16 and W25Q128
+    HW_REV=${HW_REV}
 )
 
 target_include_directories(thermometer PRIVATE src)

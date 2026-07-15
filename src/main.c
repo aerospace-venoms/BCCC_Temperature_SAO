@@ -14,7 +14,44 @@
 #include "ds18b20.h"    // for PIN_OW
 #include <stdio.h>
 
-#define DIGIT_ON_US 1000    // 1 ms per digit → ~333 Hz full refresh
+#define DIGIT_ON_US 333     // ~333 µs per digit → ~1 kHz full refresh
+
+// ---------------------------------------------------------------------------
+// Brightness control (HW_REV >= 13: button on GPIO 19)
+// ---------------------------------------------------------------------------
+#if HW_REV >= 13
+
+#define PIN_BRIGHT_BTN  19
+// Brightness levels as percentage of DIGIT_ON_US.
+// Easy to tweak: just edit this array.
+static const uint8_t BRIGHT_PCT[] = { 100, 66, 33, 15 };
+#define NUM_BRIGHT_LEVELS (sizeof(BRIGHT_PCT) / sizeof(BRIGHT_PCT[0]))
+
+static volatile int s_bright_idx = 0;
+
+#define DEBOUNCE_US 20000   // 20 ms debounce window
+
+static void brightness_isr(uint gpio, uint32_t events) {
+    (void)events;
+    if (gpio != PIN_BRIGHT_BTN) return;
+
+    static uint64_t last_us = 0;
+    uint64_t now = time_us_64();
+    if (now - last_us < DEBOUNCE_US) return;
+    last_us = now;
+
+    s_bright_idx = (s_bright_idx + 1) % NUM_BRIGHT_LEVELS;
+}
+
+static void brightness_init(void) {
+    gpio_init(PIN_BRIGHT_BTN);
+    gpio_set_dir(PIN_BRIGHT_BTN, GPIO_IN);
+    gpio_pull_up(PIN_BRIGHT_BTN);
+    gpio_set_irq_enabled_with_callback(PIN_BRIGHT_BTN,
+        GPIO_IRQ_EDGE_FALL, true, brightness_isr);
+}
+
+#endif // HW_REV >= 13
 
 // ---------------------------------------------------------------------------
 // Core 1: display multiplexer
@@ -22,8 +59,18 @@
 static void core1_display_loop(void) {
     int digit = 0;
     while (true) {
+#if HW_REV >= 13
+        int on_us = DIGIT_ON_US * BRIGHT_PCT[s_bright_idx] / 100;
+        display_refresh(digit);
+        sleep_us(on_us);
+        // Blank remainder of time slot for dimming
+        for (int i = 0; i < NUM_DIGITS; i++)
+            gpio_put(8 + i, 0);    // PIN_DIG1..3 = GPIO 8..10
+        sleep_us(DIGIT_ON_US - on_us);
+#else
         display_refresh(digit);
         sleep_us(DIGIT_ON_US);
+#endif
         if (++digit >= NUM_DIGITS) digit = 0;
     }
 }
@@ -38,14 +85,6 @@ int main(void) {
     display_init();
     display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);
 
-#ifdef MEASURE_LED_VF
-    // Hold segment 'a' of digit 1 on continuously for Vf measurement.
-    // Remove this block when done.
-    display_sr_write(0x01);             // segment a only
-    gpio_put(PIN_DIG1, 1);             // digit 1 on
-    while (true) tight_loop_contents();
-#endif
-
     multicore_launch_core1(core1_display_loop);
 
     // Boot splash: "DEF" → "C0n" → "LoL"
@@ -55,6 +94,10 @@ int main(void) {
     sleep_ms(1000);
     display_set_raw(SEG_CHR_L, SEG_CHR_o, SEG_CHR_L);
     sleep_ms(1000);
+
+#if HW_REV >= 13
+    brightness_init();
+#endif
 
     temp_init();
 
@@ -78,7 +121,6 @@ int main(void) {
             printf("Internal: %.1f F  (die temp, not ambient)\n",
                    temp_read_internal_f());
         }
-        // Refresh the sensor reading 10 times/second
         sleep_ms(100);
     }
 }

@@ -1,1 +1,1 @@
-This folder contains the information necessary to rebuild the hardware portion of the project. If you're recreating, you'll want to open the Kicad project to export manufacuring files, and also print one of the diffusers to spread out the LED light.
+This folder contains the information necessary to rebuild the hardware portion of the project. You can use the files in the 'ordering' folder to produce the PCB through e.g. JLCPCB, and you'll want to 3d print a diffuser_print.3mf to diffuse the LEDs so they shine through properly.

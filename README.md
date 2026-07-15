@@ -7,11 +7,11 @@ The PCB is shaped like a red solo cup with overflowing beer. It reads ambient te
 ## Hardware
 
 - **MCU:** Raspberry Pi RP2350A (QFN-60)
-- **Flash:** W25Q128 (16 MB)
+- **Flash:** W25Q16 (2 MB)
 - **Sensor:** DS18B20 1-Wire temperature sensor (GPIO 16); falls back to the RP2350's internal die sensor if not present
 - **Display:** 3x common-anode 7-segment LED displays, multiplexed via a 74HC595 shift register
 - **Interface:** USB-C (programming and serial debug output)
-- **Extras:** 3-pin SWD debug header, 2 user pushbuttons (RUN and QSPI_SS)
+- **Extras:** 3-pin SWD debug header, user pushbuttons (RUN, QSPI_SS/BOOTSEL, and a brightness button on GPIO 19)
 
 ### Pin Assignments
 
@@ -26,6 +26,7 @@ The PCB is shaped like a red solo cup with overflowing beer. It reads ambient te
 | 74HC595 RCLK (latch clock) | 13 |
 | 74HC595 /OE (output enable) | 14 |
 | 74HC595 /MR (master reset) | 15 |
+| Brightness button (HW rev ≥ 1.3) | 19 |
 
 ## Firmware
 
@@ -35,6 +36,8 @@ The firmware uses the Raspberry Pi Pico SDK and is structured around both RP2350
 - **Core 1** — continuously time-multiplexes the three 7-segment digits at ~333 Hz
 
 If no DS18B20 is detected on the 1-Wire bus, the display shows `---` and the internal die temperature is logged to USB serial for reference.
+
+On boards with hardware revision 1.3 or later, the brightness button (GPIO 19) cycles the display through four brightness levels.
 
 ### Prerequisites
 
