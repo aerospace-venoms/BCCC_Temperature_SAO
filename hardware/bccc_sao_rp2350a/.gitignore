@@ -10,6 +10,16 @@
 *-cache.lib
 *autosave*
 *.lck
+# Emacs-style autosave/lock cruft written alongside KiCad files
+\#*\#
+
+# svg2shenzhen scratch output
+out.log
+out.svg
+
+# Production/manufacturing scratch output (canonical fab files live in hardware/ordering/)
+production/backups/
+production/*.zip
 
 # Local settings and workspace data (specific to your machine/setup)
 fp-info-cache
