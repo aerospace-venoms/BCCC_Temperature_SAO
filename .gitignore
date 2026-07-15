@@ -4,3 +4,6 @@ build/
 *.uf2
 *.map
 *.dis
+
+# ...but keep the prebuilt, versioned release firmware
+!firmware/*.uf2

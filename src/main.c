@@ -14,6 +14,10 @@
 #include "ds18b20.h"    // for PIN_OW
 #include <stdio.h>
 
+#ifndef FW_VERSION
+#define FW_VERSION "0.0.0-dev"   // fallback if not set by the build
+#endif
+
 #define DIGIT_ON_US 333     // ~333 µs per digit → ~1 kHz full refresh
 
 // ---------------------------------------------------------------------------
@@ -81,6 +85,8 @@ static void core1_display_loop(void) {
 int main(void) {
     stdio_init_all();
     sleep_ms(1000);     // give USB CDC time to enumerate
+
+    printf("BCCC Temperature SAO — firmware v%s (HW rev %d)\n", FW_VERSION, HW_REV);
 
     display_init();
     display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);

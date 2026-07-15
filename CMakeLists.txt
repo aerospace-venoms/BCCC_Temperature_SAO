@@ -21,9 +21,14 @@ add_executable(thermometer
 # Hardware revision: 10 = v1.0, 13 = v1.3 (brightness button on GPIO 19)
 set(HW_REV 13)
 
+# Firmware version (semantic). Bump when firmware behaviour changes; the
+# prebuilt UF2 in firmware/ should be regenerated to match.
+set(FW_VERSION "1.0.0")
+
 target_compile_definitions(thermometer PRIVATE
     PICO_FLASH_SIZE_BYTES=2097152   # 2MB — fits both W25Q16 and W25Q128
     HW_REV=${HW_REV}
+    FW_VERSION="${FW_VERSION}"
 )
 
 target_include_directories(thermometer PRIVATE src)

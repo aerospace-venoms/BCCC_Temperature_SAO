@@ -63,15 +63,23 @@ This produces `build/thermometer.uf2`.
 
 ### Flashing
 
+Don't want to build from source? A prebuilt, versioned image is in [`firmware/`](firmware/) — handy if you need to recover a badge.
+
 1. Hold the BOOTSEL button (QSPI_SS) while plugging in USB-C, or press and hold QSPI_SS then press RUN to reboot into bootloader mode.
 2. The board will appear as a USB mass storage device (`RPI-RP2`).
-3. Copy `thermometer.uf2` to the drive:
+3. Copy the `.uf2` to the drive:
 
 ```sh
+cp firmware/thermometer-v1.0.0.uf2 /media/$USER/RPI-RP2/
+# or, from a source build:
 cp build/thermometer.uf2 /media/$USER/RPI-RP2/
 ```
 
-The board reboots automatically and starts running.
+The board reboots automatically and starts running. At boot it prints its firmware version over USB serial:
+
+```
+BCCC Temperature SAO — firmware v1.0.0 (HW rev 13)
+```
 
 ### Serial Debug Output
 
