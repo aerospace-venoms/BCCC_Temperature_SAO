@@ -8705,12 +8705,6 @@
 		(uuid "e89842e6-0a0f-4e7e-86ed-93183ff41ee0")
 	)
 	(junction
-		(at 347.98 39.37)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fad07ed4-1eea-43ee-9204-5486fb6189aa")
-	)
-	(junction
 		(at 201.93 81.28)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8974,7 +8968,7 @@
 	)
 	(wire
 		(pts
-			(xy 347.98 39.37) (xy 360.68 39.37)
+			(xy 346.71 39.37) (xy 360.68 39.37)
 		)
 		(stroke
 			(width 0)
@@ -9681,16 +9675,6 @@
 			(type default)
 		)
 		(uuid "93359c07-b4ce-4090-a64c-20bfe3660f3c")
-	)
-	(wire
-		(pts
-			(xy 346.71 39.37) (xy 347.98 39.37)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9920fab3-5871-4b1e-8434-ea4c5b9a293c")
 	)
 	(wire
 		(pts
@@ -14538,7 +14522,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+		(property "Footprint" "Connector_Wire:SolderWire-0.1sqmm_1x03_P3.6mm_D0.4mm_OD1mm"
 			(at 317.5 105.41 0)
 			(effects
 				(font
@@ -22812,72 +22796,6 @@
 			(project "RP2350_60QFN_minimal"
 				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
 					(reference "#PWR0130")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Small")
-		(at 347.98 39.37 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp yes)
-		(uuid "ea91a6c0-5d1d-445c-ba89-d01fc9316922")
-		(property "Reference" "TP104"
-			(at 347.726 34.798 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Small"
-			(at 347.472 36.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_1.5x1.5mm"
-			(at 353.06 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 353.06 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point"
-			(at 347.98 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "76671546-f522-4ce8-bff7-e296534eed5f")
-		)
-		(instances
-			(project "RP2350_60QFN_minimal"
-				(path "/94683f5c-9cd9-448e-be96-9792537b5cb8"
-					(reference "TP104")
 					(unit 1)
 				)
 			)
