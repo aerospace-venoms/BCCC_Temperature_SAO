@@ -33,7 +33,10 @@ static const uint8_t BRIGHT_PCT[] = { 100, 66, 33, 15 };
 
 static volatile int s_bright_idx = 0;
 
-#define DEBOUNCE_US 20000   // 20 ms debounce window
+// 200 ms debounce. Deliberately long for a mechanical tactile switch: it
+// swallows contact bounce and also stops a single firm press from advancing
+// the brightness level more than once.
+#define DEBOUNCE_US 200000
 
 static void brightness_isr(uint gpio, uint32_t events) {
     (void)events;

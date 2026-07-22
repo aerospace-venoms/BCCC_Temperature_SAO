@@ -23,7 +23,7 @@ set(HW_REV 13)
 
 # Firmware version (semantic). Bump when firmware behaviour changes; the
 # prebuilt UF2 in firmware/ should be regenerated to match.
-set(FW_VERSION "1.0.0")
+set(FW_VERSION "1.0.1")
 
 target_compile_definitions(thermometer PRIVATE
     PICO_FLASH_SIZE_BYTES=2097152   # 2MB — fits both W25Q16 and W25Q128
