@@ -51,6 +51,30 @@ The boot banner (`firmware v1.0.1 (HW rev 13)`) prints once, ~1 s after boot.
 The tool opens the port as fast as it can to catch it, but treats a missed
 banner as non-fatal — the version is only enforced when it was actually seen.
 
+## `soak_log.py` / `soak_report.py` — burn-in testing
+
+For leaving boards running to prove they stay up over hours, not seconds.
+
+```sh
+tools/soak_log.py -o soak-logs      # follow every running board; Ctrl-C to stop
+tools/soak_report.py -o soak-logs   # summarise the result
+```
+
+`soak_log.py` writes one timestamped log per board, named by chip serial. It
+logs disconnects and reconnects as explicit events instead of ignoring them —
+a board dropping off the USB bus or rebooting on its own is precisely what a
+soak test is looking for. Run it detached (`setsid nohup ... &`) to survive a
+closed terminal.
+
+`soak_report.py` reports per board: run duration, reading count and rate,
+temperature range and drift, gaps in the stream (`--gap`, default 10 s),
+disconnect events, and whether the boot banner appeared more than once, which
+means the board rebooted mid-run. Verdict is `HEALTHY` or `NEEDS REVIEW`;
+exit status is non-zero if any board needs review.
+
+Note that these hold the serial ports open, so stop the logger
+(`pkill -f soak_log.py`) before flashing those boards again.
+
 ### Requirements
 
 - `picotool` on `PATH` (v2.x). If it reports a permissions error, install its

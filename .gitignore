@@ -7,3 +7,6 @@ build/
 
 # ...but keep the prebuilt, versioned release firmware
 !firmware/*.uf2
+
+# Burn-in logs (generated)
+soak-logs/
