@@ -69,6 +69,12 @@ stop_event = threading.Event()
 active: set[str] = set()
 active_lock = threading.Lock()
 
+# picotool has to open candidate USB devices to read their serial numbers, so
+# two instances running at once make each other's target look inaccessible.
+# Flashing is therefore serialised; it is quick, and the slow part (listening
+# to each board's serial output) still happens fully in parallel.
+picotool_lock = threading.Lock()
+
 
 def log(msg: str) -> None:
     with print_lock:
@@ -177,18 +183,27 @@ def flash(board: Board, uf2: str, timeout: int) -> tuple[bool, str]:
         cmd += ["--ser", board.serial]
     else:
         cmd += ["--bus", str(board.busnum), "--address", str(board.devnum)]
-    try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return False, f"picotool timed out after {timeout}s"
-    except FileNotFoundError:
-        return False, "picotool not found on PATH"
-    if proc.returncode != 0:
-        err = (proc.stderr or proc.stdout or "").strip().replace("\n", "; ")
-        if "permission" in err.lower() or "access" in err.lower():
-            err += "  (install picotool udev rules, or run with sudo)"
-        return False, err or f"picotool exited {proc.returncode}"
-    return True, ""
+    last_err = ""
+    for attempt in (1, 2):
+        try:
+            with picotool_lock:
+                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return False, f"picotool timed out after {timeout}s"
+        except FileNotFoundError:
+            return False, "picotool not found on PATH"
+        if proc.returncode == 0:
+            return True, ""
+        last_err = (proc.stderr or proc.stdout or "").strip().replace("\n", " ")
+        # A board can be mid-re-enumeration; one retry clears that up.
+        if attempt == 1:
+            time.sleep(1.0)
+
+    # Only suggest udev rules for a genuine permission problem. picotool says
+    # "no accessible device" when it simply cannot match, which is different.
+    if "permission" in last_err.lower() or "libusb_error_access" in last_err.lower():
+        last_err += "  (install picotool udev rules, or run with sudo)"
+    return False, last_err or f"picotool exited {proc.returncode}"
 
 
 def open_port(port: str, timeout: float = 5.0) -> int:

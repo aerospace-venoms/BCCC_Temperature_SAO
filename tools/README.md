@@ -24,8 +24,16 @@ that board, so results can never be attributed to the wrong cable. If a board
 doesn't expose a serial string, it falls back to matching the physical USB port
 path, which is also stable across the reboot.
 
-Flashing targets one specific device via `picotool load -x --bus N --address M`,
-so nothing depends on which volume auto-mounted where.
+Flashing targets one specific device via `picotool load -x --ser <serial>`, so
+nothing depends on which volume auto-mounted where.
+
+**picotool calls are serialised on purpose.** picotool opens candidate USB
+devices to read their serial numbers, so two instances running at once make
+each other's target look inaccessible — it reports "no accessible RP-series
+device ... with serial number X" even though the board is plugged in and
+perfectly healthy. Only the flash step holds that lock; it takes a second or
+two, while the much slower per-board serial verification still runs fully in
+parallel. Don't run a second picotool by hand while a batch is in progress.
 
 ### Verdicts
 
