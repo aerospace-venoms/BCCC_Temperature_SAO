@@ -91,6 +91,29 @@ screen /dev/ttyACM0
 minicom -D /dev/ttyACM0
 ```
 
+## Tooling
+
+Helper scripts for building and for programming boards in quantity — see
+[`tools/README.md`](tools/README.md) for full details.
+
+| Script | Purpose |
+|---|---|
+| `scripts/bump-firmware.sh` | Rebuild and refresh the prebuilt UF2 so its filename always matches `FW_VERSION`. Pass a version (`1.1.0`) to bump first. |
+| `tools/flash_and_test.py` | Watch for boards in BOOTSEL, flash each, then verify over USB serial that the firmware runs. Handles several boards at once. |
+| `tools/soak_log.py` | Burn-in logger: timestamped output per board, recording disconnects and reboots. |
+| `tools/soak_report.py` | Summarise a burn-in run (duration, drift, gaps, reboots) with a per-board verdict. |
+
+Programming a batch:
+
+```sh
+tools/flash_and_test.py --log batch.csv
+```
+
+Leave it running and keep plugging boards in; Ctrl-C prints a summary. Boards
+with no DS18B20 fitted report `PASS*` rather than failing, so this works before
+the sensors are attached. Once they are, add `--require-sensor` to catch an
+unpopulated or badly soldered sensor.
+
 ## Hardware Design
 
 The KiCad project files are in `hardware/bccc_sao_rp2350a/`. The PCB artwork — a red solo cup with overflowing beer — was designed in [Inkscape](https://inkscape.org/), starting from an AI-generated image, then transferred into KiCad using the [SVG2Shenzhen](https://github.com/badgeek/svg2shenzhen) plugin.

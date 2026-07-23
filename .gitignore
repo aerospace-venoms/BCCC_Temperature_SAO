@@ -10,3 +10,6 @@ build/
 
 # Burn-in logs (generated)
 soak-logs/
+
+# Session handoff notes (working state, not for the public repo)
+HANDOFF.md
