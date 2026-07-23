@@ -1,0 +1,60 @@
+# Production Test Tools
+
+## `flash_and_test.py` — batch flash + verify station
+
+Watches for RP2350 boards entering BOOTSEL mode, flashes each with the release
+firmware, then reopens it as a serial device and confirms the firmware is
+actually running. Handles several boards at once, so you can keep plugging in
+cables without waiting for each to finish.
+
+```sh
+tools/flash_and_test.py                        # newest firmware/*.uf2, run until Ctrl-C
+tools/flash_and_test.py --log run.csv          # append a per-board record
+tools/flash_and_test.py --expect-version 1.0.1 # fail on a version mismatch
+tools/flash_and_test.py --require-sensor       # only once DS18B20s are fitted
+tools/flash_and_test.py --once                 # process what's plugged in, then exit
+```
+
+### How boards are kept straight in parallel
+
+Every RP2350 reports a unique USB serial number (its chip ID), and it reports
+the **same** value in BOOTSEL mode and when running the firmware. After
+flashing a board, the tool finds the `/dev/ttyACM*` whose USB serial matches
+that board, so results can never be attributed to the wrong cable. If a board
+doesn't expose a serial string, it falls back to matching the physical USB port
+path, which is also stable across the reboot.
+
+Flashing targets one specific device via `picotool load -x --bus N --address M`,
+so nothing depends on which volume auto-mounted where.
+
+### Verdicts
+
+| Result | Meaning |
+|---|---|
+| `PASS` | Firmware runs, DS18B20 detected, ambient reading plausible (32–120 °F) |
+| `PASS*` | Firmware runs, **no DS18B20 fitted** — fell back to internal die temp (40–190 °F) |
+| `FAIL` | Flash failed, no serial port appeared, no output, too few readings, bad version, or an implausible temperature |
+
+`PASS*` is a pass on purpose: this is expected before the sensors are attached.
+Once they're fitted, add `--require-sensor` and a missing sensor becomes a
+failure — that's how you catch an unpopulated or cold-jointed DS18B20.
+
+The boot banner (`firmware v1.0.1 (HW rev 13)`) prints once, ~1 s after boot.
+The tool opens the port as fast as it can to catch it, but treats a missed
+banner as non-fatal — the version is only enforced when it was actually seen.
+
+### Requirements
+
+- `picotool` on `PATH` (v2.x). If it reports a permissions error, install its
+  udev rules or run the tool with `sudo`.
+- Python 3.9+ — standard library only, no pip installs.
+
+### Notes
+
+- Blank boards from the factory enumerate straight into BOOTSEL, so they're
+  picked up automatically. An already-programmed board must be put into BOOTSEL
+  by hand (hold BOOTSEL/QSPI_SS while plugging in) before it will be re-flashed.
+- Re-plugging a board makes the tool treat it as a new unit, so retries just
+  work.
+- Results go to stdout live; `--log` appends CSV (timestamp, chip serial, port,
+  status, version, sensor state, temperature) for traceability across a run.
