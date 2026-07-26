@@ -75,6 +75,15 @@ active_lock = threading.Lock()
 # to each board's serial output) still happens fully in parallel.
 picotool_lock = threading.Lock()
 
+# CSV log path (set from --log). Each result is appended and flushed as it
+# completes, so an interrupted run - even a kill/crash - keeps every board
+# already tested. Serialised because workers finish concurrently.
+log_path: str | None = None
+log_lock = threading.Lock()
+
+CSV_HEADER = ["timestamp", "board_serial", "port", "status", "detail",
+              "fw_version", "hw_rev", "sensor", "temp_f"]
+
 
 def log(msg: str) -> None:
     with print_lock:
@@ -366,23 +375,31 @@ def _handle_board(board: Board, args) -> None:
 def record(res: Result) -> None:
     with results_lock:
         results.append(res)
+    append_result(res)
     icon = {"PASS": "PASS ", "PASS_NO_SENSOR": "PASS*"}.get(res.status, "FAIL ")
     ver = f" v{res.version}" if res.version else ""
     log(f"  [{icon}] {res.label}{ver} - {res.detail}")
 
 
-def write_log(path: str) -> None:
-    new = not os.path.exists(path)
-    with open(path, "a", newline="") as fh:
-        w = csv.writer(fh)
-        if new:
-            w.writerow(["timestamp", "board_serial", "port", "status", "detail",
-                        "fw_version", "hw_rev", "sensor", "temp_f"])
-        with results_lock:
-            for r in results:
-                w.writerow([r.when, r.serial or "", r.label, r.status, r.detail,
-                            r.version or "", r.hw_rev or "", r.sensor,
-                            "" if r.temperature is None else r.temperature])
+def append_result(res: Result) -> None:
+    """Append one result to the CSV and flush, so nothing is lost on interrupt."""
+    if not log_path:
+        return
+    row = [res.when, res.serial or "", res.label, res.status, res.detail,
+           res.version or "", res.hw_rev or "", res.sensor,
+           "" if res.temperature is None else res.temperature]
+    with log_lock:
+        try:
+            new = not os.path.exists(log_path) or os.path.getsize(log_path) == 0
+            with open(log_path, "a", newline="") as fh:
+                w = csv.writer(fh)
+                if new:
+                    w.writerow(CSV_HEADER)
+                w.writerow(row)
+                fh.flush()
+                os.fsync(fh.fileno())
+        except OSError as exc:
+            log(f"  (warning: could not write to {log_path}: {exc})")
 
 
 def summarise() -> int:
@@ -434,10 +451,15 @@ def main() -> int:
         print(f"error: firmware image not found: {args.firmware}", file=sys.stderr)
         return 2
 
+    global log_path
+    log_path = args.log
+
     print(f"Firmware : {args.firmware}")
     print(f"Sensor   : {'required' if args.require_sensor else 'optional (no DS18B20 is OK)'}")
     if args.expect_version:
         print(f"Version  : must report {args.expect_version}")
+    if log_path:
+        print(f"Log      : {log_path} (appended per board)")
     print("\nPlug in boards (BOOTSEL held, or blank from the factory). Ctrl-C when done.\n")
 
     seen: set[str] = set()
@@ -476,9 +498,8 @@ def main() -> int:
     for t in threads:
         t.join(timeout=args.flash_timeout + args.enumerate_timeout + args.capture_seconds + 5)
 
-    if args.log:
-        write_log(args.log)
-        print(f"\nresults appended to {args.log}")
+    if log_path:
+        print(f"\nresults logged to {log_path}")
 
     return summarise()
 

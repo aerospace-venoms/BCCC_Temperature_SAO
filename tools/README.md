@@ -88,5 +88,7 @@ Note that these hold the serial ports open, so stop the logger
   by hand (hold BOOTSEL/QSPI_SS while plugging in) before it will be re-flashed.
 - Re-plugging a board makes the tool treat it as a new unit, so retries just
   work.
-- Results go to stdout live; `--log` appends CSV (timestamp, chip serial, port,
+- Results go to stdout live; `--log` writes CSV (timestamp, chip serial, port,
   status, version, sensor state, temperature) for traceability across a run.
+  Each board's row is appended and flushed the moment it finishes, so an
+  interrupted run — even a `kill` or a crash — keeps every board already tested.

@@ -13,3 +13,6 @@ soak-logs/
 
 # Session handoff notes (working state, not for the public repo)
 HANDOFF.md
+
+# Production flash/test batch logs (generated)
+batch-*.csv
