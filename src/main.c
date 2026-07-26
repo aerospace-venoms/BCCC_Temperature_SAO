@@ -92,11 +92,14 @@ int main(void) {
     printf("BCCC Temperature SAO — firmware v%s (HW rev %d)\n", FW_VERSION, HW_REV);
 
     display_init();
-    display_set_raw(SEG_DASH, SEG_DASH, SEG_DASH);
+    // Segment self-test: light every segment and all three decimal points
+    // ("8.8.8.") so the whole display can be eyeballed during flashing/QC.
+    display_set_raw(SEG_ALL_ON | SEG_DP, SEG_ALL_ON | SEG_DP, SEG_ALL_ON | SEG_DP);
 
     multicore_launch_core1(core1_display_loop);
 
-    // Boot splash: "DEF" → "C0n" → "LoL"
+    // Boot splash: "8.8.8." (self-test) → "DEF" → "C0n" → "LoL"
+    sleep_ms(1000);
     display_set_raw(SEG_CHR_D, SEG_CHR_E, SEG_CHR_F);
     sleep_ms(1000);
     display_set_raw(SEG_CHR_C, SEG_DIGITS[0], SEG_CHR_n);

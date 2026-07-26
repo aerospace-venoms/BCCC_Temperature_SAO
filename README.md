@@ -70,7 +70,7 @@ Don't want to build from source? A prebuilt, versioned image is in [`firmware/`]
 3. Copy the `.uf2` to the drive:
 
 ```sh
-cp firmware/thermometer-v1.0.1.uf2 /media/$USER/RP2350/
+cp firmware/thermometer-v1.1.0.uf2 /media/$USER/RP2350/
 # or, from a source build:
 cp build/thermometer.uf2 /media/$USER/RP2350/
 ```
@@ -78,7 +78,7 @@ cp build/thermometer.uf2 /media/$USER/RP2350/
 The board reboots automatically and starts running. At boot it prints its firmware version over USB serial:
 
 ```
-BCCC Temperature SAO — firmware v1.0.1 (HW rev 13)
+BCCC Temperature SAO — firmware v1.1.0 (HW rev 13)
 ```
 
 ### Serial Debug Output

@@ -10,7 +10,7 @@ cables without waiting for each to finish.
 ```sh
 tools/flash_and_test.py                        # newest firmware/*.uf2, run until Ctrl-C
 tools/flash_and_test.py --log run.csv          # append a per-board record
-tools/flash_and_test.py --expect-version 1.0.1 # fail on a version mismatch
+tools/flash_and_test.py --expect-version 1.1.0 # fail on a version mismatch
 tools/flash_and_test.py --require-sensor       # only once DS18B20s are fitted
 tools/flash_and_test.py --once                 # process what's plugged in, then exit
 ```
@@ -47,7 +47,7 @@ parallel. Don't run a second picotool by hand while a batch is in progress.
 Once they're fitted, add `--require-sensor` and a missing sensor becomes a
 failure — that's how you catch an unpopulated or cold-jointed DS18B20.
 
-The boot banner (`firmware v1.0.1 (HW rev 13)`) prints once, ~1 s after boot.
+The boot banner (`firmware v1.1.0 (HW rev 13)`) prints once, ~1 s after boot.
 The tool opens the port as fast as it can to catch it, but treats a missed
 banner as non-fatal — the version is only enforced when it was actually seen.
 

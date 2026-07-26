@@ -413,8 +413,11 @@ def main() -> int:
     ap.add_argument("--expect-version", help="fail if the reported version differs")
     ap.add_argument("--require-sensor", action="store_true",
                     help="treat a missing DS18B20 as a failure")
-    ap.add_argument("--capture-seconds", type=float, default=6.0,
-                    help="how long to listen on the serial port (default 6)")
+    # The firmware boot splash (8.8.8. self-test -> DEF -> C0n -> LoL, ~4 s) runs
+    # before the first temperature reading, so the window must comfortably clear
+    # the splash and still capture min_readings samples (~0.86 s apart).
+    ap.add_argument("--capture-seconds", type=float, default=10.0,
+                    help="how long to listen on the serial port (default 10)")
     ap.add_argument("--min-readings", type=int, default=3,
                     help="temperature lines required to pass (default 3)")
     ap.add_argument("--flash-timeout", type=int, default=60)
