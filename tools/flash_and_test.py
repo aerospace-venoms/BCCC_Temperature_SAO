@@ -339,6 +339,17 @@ def handle_board(board: Board, args) -> None:
                 active.discard(board.serial)
 
 
+# Failure details that indicate the read-back itself came up short (as opposed
+# to the firmware being genuinely wrong). These are worth retrying.
+_READBACK_FAIL_MARKERS = ("reading", "no serial output", "open failed",
+                          "main loop may be stalled")
+
+
+def _is_readback_failure(detail: str) -> bool:
+    d = detail.lower()
+    return any(m in d for m in _READBACK_FAIL_MARKERS)
+
+
 def _handle_board(board: Board, args) -> None:
     log(f"[{board.label}] detected in BOOTSEL - flashing...")
 
@@ -363,10 +374,28 @@ def _handle_board(board: Board, args) -> None:
                       sensor="unknown"))
         return
 
+    # Read back and verify. The read-back can come up short for reasons that
+    # have nothing to do with a bad board: the flash succeeded but the port was
+    # opened a beat too late, USB was busy with another board / the auto-mounted
+    # BOOTSEL volume, or the port briefly resolved to the wrong device. So if a
+    # verification comes back FAIL *for a read-back reason*, re-resolve the port
+    # and read again. A board that is genuinely not running still yields nothing
+    # on the retries and stays FAIL; a healthy board that just lost the race now
+    # passes. Non-read-back failures (version mismatch, implausible temp,
+    # missing sensor when required) are final and never retried.
     log(f"[{board.label}] flashed; reading {port}...")
-    text = capture_serial(port, args.capture_seconds)
-    status, detail, info = evaluate(text, args.expect_version, args.require_sensor,
-                                    args.min_readings)
+    status, detail, info = "FAIL", "no serial output", {
+        "version": None, "hw_rev": None, "sensor": "unknown", "temperature": None}
+    for attempt in range(1, args.verify_retries + 2):
+        text = capture_serial(port, args.capture_seconds)
+        status, detail, info = evaluate(text, args.expect_version,
+                                        args.require_sensor, args.min_readings)
+        if not (status == "FAIL" and _is_readback_failure(detail)):
+            break
+        if attempt <= args.verify_retries and not stop_event.is_set():
+            log(f"[{board.label}] read-back short ({detail}); retry {attempt}...")
+            time.sleep(1.0)
+            port = find_serial_port(board.serial, board.devpath) or port
     record(Result(board.label, board.serial, status, detail,
                   version=info["version"], hw_rev=info["hw_rev"],
                   sensor=info["sensor"], temperature=info["temperature"]))
@@ -437,6 +466,10 @@ def main() -> int:
                     help="how long to listen on the serial port (default 10)")
     ap.add_argument("--min-readings", type=int, default=3,
                     help="temperature lines required to pass (default 3)")
+    ap.add_argument("--verify-retries", type=int, default=2,
+                    help="re-read the serial port this many extra times if the "
+                         "read-back comes up short (default 2); guards against a "
+                         "flashed-but-flaky-to-verify board being marked FAIL")
     ap.add_argument("--flash-timeout", type=int, default=60)
     ap.add_argument("--enumerate-timeout", type=float, default=15.0)
     ap.add_argument("--poll-interval", type=float, default=0.25)

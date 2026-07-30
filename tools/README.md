@@ -47,6 +47,18 @@ parallel. Don't run a second picotool by hand while a batch is in progress.
 Once they're fitted, add `--require-sensor` and a missing sensor becomes a
 failure — that's how you catch an unpopulated or cold-jointed DS18B20.
 
+**Read-back is retried.** The flash (picotool) and the verification (reading the
+serial port back) are separate steps, and the *verification* can come up short
+for reasons unrelated to a bad board: the port opened a beat late, USB was busy
+with another board or the auto-mounted BOOTSEL volume, or the port briefly
+resolved to the wrong device. So when a board flashes fine but the read-back is
+short (too few readings / no output), the tool re-reads it (`--verify-retries`,
+default 2) before calling it a FAIL. A genuinely dead board still yields nothing
+across the retries; a healthy board that just lost the race passes. Real
+firmware faults — version mismatch, implausible temperature, missing sensor when
+required — are final and never retried. If you see many `only N readings` fails,
+they are almost always flashed-and-fine boards, not scrap.
+
 The boot banner (`firmware v1.1.0 (HW rev 13)`) prints once, ~1 s after boot.
 The tool opens the port as fast as it can to catch it, but treats a missed
 banner as non-fatal — the version is only enforced when it was actually seen.
