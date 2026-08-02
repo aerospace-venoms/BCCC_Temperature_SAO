@@ -16,3 +16,7 @@ HANDOFF.md
 
 # Production flash/test batch logs (generated)
 batch-*.csv
+
+# Python bytecode cache
+__pycache__/
+*.pyc
